@@ -24,9 +24,14 @@ App.prototype.__init = function() {
 	/*var camera =*/ new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), this.__scene);
 	/*var light =*/ new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 10), this.__scene);
 	
+	this.__scene.enablePhysics();
+	this.__scene.setGravity(new BABYLON.Vector3(0, -10, 0));
 //	var origin = BABYLON.Mesh.CreateSphere("origin", 10, 1.0, this.__scene);
+	
+	var box = BABYLON.Mesh.CreateBox("Box", 3.0, this.__scene);
+	box.setPhysicsState({ impostor: BABYLON.PhysicsEngine.SphereImpostor, mass: 1 });
 	this.__car = new Car(
-		BABYLON.Mesh.CreateBox("Box", 3.0, this.__scene)
+		box
 	);
 	
 	this.__control_state = new ControlState(
