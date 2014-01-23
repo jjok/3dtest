@@ -12,3 +12,7 @@ game screen
 				points
 		player[]
 			player
+				speed
+				turning
+
+http://www.gamepadjs.com/
