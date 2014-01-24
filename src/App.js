@@ -1,6 +1,8 @@
 
 var App = function(canvas) {
 	this.__canvas = canvas;
+
+	this.__counter = 0;
 };
 
 App.prototype.run = function() {
@@ -18,19 +20,26 @@ App.prototype.__init = function() {
 	
 	// Load BABYLON 3D engine
 	this.__engine = new BABYLON.Engine(this.__canvas, true);
+//	console.log(this.__engine);
 	
 	// Move this ////////////////////////////////////////
 	var scene = this.__scene = new BABYLON.Scene(this.__engine);
-	var camera = new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), this.__scene);
+	var camera = new BABYLON.ArcRotateCamera(
+		"Camera",
+		1, 0.8, 20, new BABYLON.Vector3(0, 0, 0), this.__scene);
 	var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 4, 10), this.__scene);
 //	var light = new BABYLON.DirectionalLight("Light", new BABYLON.Vector3(-1, -2, -1), this.__scene);
 //	light.position = new BABYLON.Vector3(0, 20, 0);
 //	console.log(camera);
-//	this.__scene.enablePhysics();
-//	this.__scene.setGravity(new BABYLON.Vector3(0, -10, 0));
+//	this.__scene.collisionsEnabled = true;
+	this.__scene.enablePhysics();
+	this.__scene.setGravity(new BABYLON.Vector3(0, -10, 0));
+//	console.log(this.__scene);
 	
 	// Ground
 	var ground = BABYLON.Mesh.CreateGround("ground", 40, 40, 1, this.__scene, false);
+	ground.setPhysicsState({ impostor: BABYLON.PhysicsEngine.BoxImpostor, mass: 0, friction: 0.5, restitution: 0.7 });
+	
 	var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", this.__scene);
 	groundMaterial.specularColor = new BABYLON.Color3(255, 255, 255);
 //	groundMaterial.diffuseTexture = new BABYLON.Texture("wood.png", scene);
@@ -43,18 +52,23 @@ App.prototype.__init = function() {
 //	console.log(groundMaterial);
 	
 	
-	var box = BABYLON.Mesh.CreateBox("Box", 3.0, this.__scene);
-	box.position = new BABYLON.Vector3(0, 1.5, 0);
+	var box = BABYLON.Mesh.CreateBox("Box", 1.0, this.__scene);
+	box.position = new BABYLON.Vector3(0, 0.55, 0);
 //	box.renderingGroupId = 1;
 //	box.receiveShadows = true;
 	box.setPhysicsState({
 		impostor: BABYLON.PhysicsEngine.BoxImpostor,
-		mass: 1
+		mass: 1,
+		friction: 0.01,
+		restitution: 0.5
 	});
 	this.__car = new Car(
 		box
 	);
 	console.log(box);
+	
+//	ground.checkCollisions = true;
+//	box.checkCollisions = true;
 	
 //	var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
 //	shadowGenerator.getShadowMap().renderList.push(box);
@@ -78,25 +92,30 @@ App.prototype.__init = function() {
 };
 
 App.prototype.__update = function() {
-	if(this.__control_state.brake) {
-		this.__car.brake();
+
+	this.__counter++;
+	if(this.__counter == 80) {
+		this.__engine.stopRenderLoop();
 	}
-	else if(this.__control_state.accelerate) {
-		this.__car.accelerate();
-	}
-	else {
-		this.__car.decelerate();
-	}
-	
-	if(this.__control_state.left) {
-		this.__car.turnLeft();
-	}
-	else if(this.__control_state.right) {
-		this.__car.turnRight();
-	}
-	else {
-		this.__car.unturn();
-	}
+//	if(this.__control_state.brake) {
+//		this.__car.brake();
+//	}
+//	else if(this.__control_state.accelerate) {
+//		this.__car.accelerate();
+//	}
+//	else {
+//		this.__car.decelerate();
+//	}
+//	
+//	if(this.__control_state.left) {
+//		this.__car.turnLeft();
+//	}
+//	else if(this.__control_state.right) {
+//		this.__car.turnRight();
+//	}
+//	else {
+//		this.__car.unturn();
+//	}
 	
 	this.__car.update();
 };
