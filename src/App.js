@@ -20,16 +20,35 @@ App.prototype.__init = function() {
 	this.__engine = new BABYLON.Engine(this.__canvas, true);
 	
 	// Move this ////////////////////////////////////////
-	this.__scene = new BABYLON.Scene(this.__engine);
+	var scene = this.__scene = new BABYLON.Scene(this.__engine);
 	/*var camera =*/ new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), this.__scene);
-	/*var light =*/ new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 10), this.__scene);
+	/*var light =*/ new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 4, 10), this.__scene);
 	
-	this.__scene.enablePhysics();
-	this.__scene.setGravity(new BABYLON.Vector3(0, -10, 0));
+//	this.__scene.enablePhysics();
+//	this.__scene.setGravity(new BABYLON.Vector3(0, -10, 0));
 //	var origin = BABYLON.Mesh.CreateSphere("origin", 10, 1.0, this.__scene);
 	
+	
+	var ground = BABYLON.Mesh.CreateGround("ground", 20, 20, 1, this.__scene, false);
+	var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", this.__scene);
+	groundMaterial.specularColor = new BABYLON.Color3(200, 100, 100);
+//	groundMaterial.diffuseTexture = new BABYLON.Texture("wood.png", scene);
+//	groundMaterial.diffuseTexture.uScale = 2;
+//	groundMaterial.diffuseTexture.vScale = 2;
+	ground.material = groundMaterial;
+	ground.receiveShadows = true;
+//	ground.renderingGroupId = 1;
+//	console.log(ground);
+//	console.log(groundMaterial);
+	
+	
 	var box = BABYLON.Mesh.CreateBox("Box", 3.0, this.__scene);
-	box.setPhysicsState({ impostor: BABYLON.PhysicsEngine.SphereImpostor, mass: 1 });
+	box.position = new BABYLON.Vector3(0, 1.5, 0);
+//	box.renderingGroupId = 1;
+	box.setPhysicsState({
+		impostor: BABYLON.PhysicsEngine.SphereImpostor,
+		mass: 1
+	});
 	this.__car = new Car(
 		box
 	);
@@ -57,6 +76,16 @@ App.prototype.__update = function() {
 	}
 	else {
 		this.__car.decelerate();
+	}
+	
+	if(this.__control_state.left) {
+		this.__car.turnLeft();
+	}
+	else if(this.__control_state.right) {
+		this.__car.turnRight();
+	}
+	else {
+		this.__car.unturn();
 	}
 	
 	this.__car.update();
