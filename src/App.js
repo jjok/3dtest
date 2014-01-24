@@ -21,22 +21,23 @@ App.prototype.__init = function() {
 	
 	// Move this ////////////////////////////////////////
 	var scene = this.__scene = new BABYLON.Scene(this.__engine);
-	/*var camera =*/ new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), this.__scene);
-	/*var light =*/ new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 4, 10), this.__scene);
-	
+	var camera = new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), this.__scene);
+	var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 4, 10), this.__scene);
+//	var light = new BABYLON.DirectionalLight("Light", new BABYLON.Vector3(-1, -2, -1), this.__scene);
+//	light.position = new BABYLON.Vector3(0, 20, 0);
+//	console.log(camera);
 //	this.__scene.enablePhysics();
 //	this.__scene.setGravity(new BABYLON.Vector3(0, -10, 0));
-//	var origin = BABYLON.Mesh.CreateSphere("origin", 10, 1.0, this.__scene);
 	
-	
-	var ground = BABYLON.Mesh.CreateGround("ground", 20, 20, 1, this.__scene, false);
+	// Ground
+	var ground = BABYLON.Mesh.CreateGround("ground", 40, 40, 1, this.__scene, false);
 	var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", this.__scene);
-	groundMaterial.specularColor = new BABYLON.Color3(200, 100, 100);
+	groundMaterial.specularColor = new BABYLON.Color3(255, 255, 255);
 //	groundMaterial.diffuseTexture = new BABYLON.Texture("wood.png", scene);
 //	groundMaterial.diffuseTexture.uScale = 2;
 //	groundMaterial.diffuseTexture.vScale = 2;
 	ground.material = groundMaterial;
-	ground.receiveShadows = true;
+//	ground.receiveShadows = true;
 //	ground.renderingGroupId = 1;
 //	console.log(ground);
 //	console.log(groundMaterial);
@@ -45,18 +46,24 @@ App.prototype.__init = function() {
 	var box = BABYLON.Mesh.CreateBox("Box", 3.0, this.__scene);
 	box.position = new BABYLON.Vector3(0, 1.5, 0);
 //	box.renderingGroupId = 1;
+//	box.receiveShadows = true;
 	box.setPhysicsState({
-		impostor: BABYLON.PhysicsEngine.SphereImpostor,
+		impostor: BABYLON.PhysicsEngine.BoxImpostor,
 		mass: 1
 	});
 	this.__car = new Car(
 		box
 	);
+	console.log(box);
+	
+//	var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
+//	shadowGenerator.getShadowMap().renderList.push(box);
 	
 	this.__control_state = new ControlState(
 		37, //left
 		39, //right
-		32  //space
+		32, //space
+		90  //z
 	);
 	var self = this;
 	document.addEventListener("keydown", function(e) {
@@ -71,7 +78,10 @@ App.prototype.__init = function() {
 };
 
 App.prototype.__update = function() {
-	if(this.__control_state.accelerate) {
+	if(this.__control_state.brake) {
+		this.__car.brake();
+	}
+	else if(this.__control_state.accelerate) {
 		this.__car.accelerate();
 	}
 	else {
