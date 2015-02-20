@@ -7,12 +7,19 @@ game screen
 		time
 			current
 			best
-		track
-			route for CPU to follow
-				points
-		player[]
-			player
-				speed
-				turning
+		scene
+			track
+				route for CPU to follow
+					points
+			player[]
+				player
+					speed
+					turning
 
 http://www.gamepadjs.com/
+
+Maybe use Bower?
+
+	bower install babylonjs
+	bower install hand
+	bower install scriptjs

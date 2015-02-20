@@ -3,11 +3,20 @@
  * @param box {BABYLON.Mesh.Box}
  */
 var Car = function(box) {
+	
+	/**
+	 * 
+	 */
 	this.__box = box;
+	
+	/**
+	 * The speed of the car.
+	 * @var float
+	 */
 	this.__speed = 0;
 	this.__top_speed = 0.5;
 	this.__acceleration = 0.1;
-	this.__braking = 0.05;
+	this.__braking = 0.1;
 	
 	/**
 	 * Measured in radians.
@@ -25,24 +34,17 @@ var Car = function(box) {
 	this.__length = 1;
 	this.__half_length = this.__length / 2;
 
-//	console.log(new BABYLON.Vector3(1, 1, 1).add(new BABYLON.Vector3(2, 2, 2)));
-//	console.log(this.__box.position);
-//	var front = this.__box.position.add(new BABYLON.Vector3(0.1, 0, 0));
-//	var back = this.__box.position.subtract(new BABYLON.Vector3(0.1, 0, 0));
-//	console.log(front);
-//	console.log(back);
-//	console.log(front.subtract(back));
-	this.__speed = 0.3;
-//	this.__steer_angle = 0.1;
-//	this.__heading = 3 * Math.PI / 2;
-	this.__heading = 2;
 	
-//	this.__counter = 0;
+	this.__state = Car.State.REST;
 };
 
 //Car.prototype.getSpeed = function() {
 //	return this.__speed;
 //};
+
+Car.prototype.setState = function(state) {
+	this.__state = state;
+};
 
 /**
  * Accelerate the car.
@@ -80,7 +82,9 @@ Car.prototype.unturn = function() {
 };
 
 Car.prototype.update = function() {
+	//TODO
 	var dt = 1 / 60;
+	
 //	if(this.__counter == 2) {
 //		return;
 //	}
@@ -118,6 +122,7 @@ Car.prototype.update = function() {
 		
 		//work out angle between points
 		//rotate car to angle
+		
 		//move car to new center point
 //		this.__box.position = new BABYLON.Vector3(
 //			(front_wheel_position.x + back_wheel_position.x) / 2,
@@ -128,18 +133,33 @@ Car.prototype.update = function() {
 			front_wheel_position.z - back_wheel_position.z,
 			front_wheel_position.x - back_wheel_position.x
 		);
-	
-		this.__box.applyImpulse(
-			new BABYLON.Vector3(this.__speed * Math.cos(this.__heading), 0, this.__speed * Math.sin(this.__heading)),
-			new BABYLON.Vector3(0, this.__half_length / 1.4, 0)
-		);
+//		console.log(this.__heading);
+		switch(this.__state) {
+			case Car.State.ACCELERATING:
+				this.__box.applyImpulse(
+					new BABYLON.Vector3(this.__speed * Math.cos(this.__heading), 0, this.__speed * Math.sin(this.__heading)),
+					this.__box.position
+				);
+				break;
+			
+			case Car.State.BRAKING:
+				this.__box.applyImpulse(
+					new BABYLON.Vector3(-this.__speed * Math.cos(this.__heading), 0.1, -this.__speed * Math.sin(this.__heading)),
+					this.__box.position
+				);
+				break;
+		}
 		
-
 //	console.log(this.__heading);
 //	console.log(this.__box.rotation);
 //	console.log(this.__box.position);
 //	this.__box.rotation.y = this.__heading;
-	
-//	this.__counter++;
 	}
+//	this.__box.rotation.y = this.__heading;
+};
+
+Car.State = {
+	REST: 0,
+	ACCELERATING: 1,
+	BRAKING: 2
 };

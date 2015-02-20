@@ -2,7 +2,7 @@
 var App = function(canvas) {
 	this.__canvas = canvas;
 
-	this.__counter = 0;
+//	this.__counter = 0;
 };
 
 App.prototype.run = function() {
@@ -28,12 +28,17 @@ App.prototype.__init = function() {
 		"Camera",
 		1, 0.8, 20, new BABYLON.Vector3(0, 0, 0), this.__scene);
 	var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 4, 10), this.__scene);
+	
+	this.__scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.OimoJSPlugin());
+	
 //	var light = new BABYLON.DirectionalLight("Light", new BABYLON.Vector3(-1, -2, -1), this.__scene);
 //	light.position = new BABYLON.Vector3(0, 20, 0);
 //	console.log(camera);
 //	this.__scene.collisionsEnabled = true;
-	this.__scene.enablePhysics();
-	this.__scene.setGravity(new BABYLON.Vector3(0, -10, 0));
+	
+//	this.__scene.enablePhysics();
+//	this.__scene.setGravity(new BABYLON.Vector3(0, -10, 0));
+	
 //	console.log(this.__scene);
 	
 	// Ground
@@ -53,7 +58,8 @@ App.prototype.__init = function() {
 	
 	
 	var box = BABYLON.Mesh.CreateBox("Box", 1.0, this.__scene);
-	box.position = new BABYLON.Vector3(0, 0.55, 0);
+	box.position = new BABYLON.Vector3(0, 1/*0.55*/, 0);
+	
 //	box.renderingGroupId = 1;
 //	box.receiveShadows = true;
 	box.setPhysicsState({
@@ -65,7 +71,6 @@ App.prototype.__init = function() {
 	this.__car = new Car(
 		box
 	);
-	console.log(box);
 	
 //	ground.checkCollisions = true;
 //	box.checkCollisions = true;
@@ -93,29 +98,33 @@ App.prototype.__init = function() {
 
 App.prototype.__update = function() {
 
-	this.__counter++;
-	if(this.__counter == 80) {
-		this.__engine.stopRenderLoop();
+//	this.__counter++;
+//	if(this.__counter == 80) {
+//		this.__engine.stopRenderLoop();
+//	}
+	
+	if(this.__control_state.brake) {
+		this.__car.brake();
+		this.__car.setState(Car.State.BRAKING);
 	}
-//	if(this.__control_state.brake) {
-//		this.__car.brake();
-//	}
-//	else if(this.__control_state.accelerate) {
-//		this.__car.accelerate();
-//	}
-//	else {
-//		this.__car.decelerate();
-//	}
-//	
-//	if(this.__control_state.left) {
-//		this.__car.turnLeft();
-//	}
-//	else if(this.__control_state.right) {
-//		this.__car.turnRight();
-//	}
-//	else {
-//		this.__car.unturn();
-//	}
+	else if(this.__control_state.accelerate) {
+		this.__car.accelerate();
+		this.__car.setState(Car.State.ACCELERATING);
+	}
+	else {
+		this.__car.decelerate();
+		this.__car.setState(Car.State.REST);
+	}
+	
+	if(this.__control_state.left) {
+		this.__car.turnLeft();
+	}
+	else if(this.__control_state.right) {
+		this.__car.turnRight();
+	}
+	else {
+		this.__car.unturn();
+	}
 	
 	this.__car.update();
 };
