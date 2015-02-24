@@ -81,9 +81,7 @@ Car.prototype.unturn = function() {
 //	this.__steer_angle = 0;
 };
 
-Car.prototype.update = function() {
-	//TODO
-	var dt = 1 / 60;
+Car.prototype.update = function(dt) {
 	
 //	if(this.__counter == 2) {
 //		return;

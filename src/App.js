@@ -97,7 +97,8 @@ App.prototype.__init = function() {
 };
 
 App.prototype.__update = function() {
-
+	//TODO
+	var dt = 1 / 60;
 //	this.__counter++;
 //	if(this.__counter == 80) {
 //		this.__engine.stopRenderLoop();
@@ -126,7 +127,7 @@ App.prototype.__update = function() {
 		this.__car.unturn();
 	}
 	
-	this.__car.update();
+	this.__car.update(dt);
 };
 
 App.prototype.__draw = function() {
