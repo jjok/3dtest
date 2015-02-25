@@ -1,45 +1,40 @@
 
 var App = function(canvas) {
 	this.__canvas = canvas;
-
-//	this.__counter = 0;
 };
 
+/**
+ * Initialise the game and run the game loop.
+ */
 App.prototype.run = function() {
 	this.__init();
 	
-	var self = this;
-	// Once the scene is loaded, just register a render loop to render it
-	this.__engine.runRenderLoop(function () {
-		self.__update();
-		self.__draw();
-	});
+	this.__engine.runRenderLoop(function() {
+		this.__update();
+		this.__draw();
+	}.bind(this));
 };
 
 App.prototype.__init = function() {
-	
+
+	// Move this ////////////////////////////////////////
 	// Load BABYLON 3D engine
 	this.__engine = new BABYLON.Engine(this.__canvas, true);
-//	console.log(this.__engine);
-	
-	// Move this ////////////////////////////////////////
 	var scene = this.__scene = new BABYLON.Scene(this.__engine);
+	
+	//http://doc.babylonjs.com/page.php?p=22061
 	var camera = new BABYLON.ArcRotateCamera(
 		"Camera",
-		1, 0.8, 20, new BABYLON.Vector3(0, 0, 0), this.__scene);
+		0, 0.8, 30, new BABYLON.Vector3(0, 0, 0), this.__scene);
+	
+	//http://doc.babylonjs.com/page.php?p=22071
 	var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 4, 10), this.__scene);
+//	var light = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(0, -1, 0), this.__scene);
 	
 	this.__scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.OimoJSPlugin());
 	
 //	var light = new BABYLON.DirectionalLight("Light", new BABYLON.Vector3(-1, -2, -1), this.__scene);
 //	light.position = new BABYLON.Vector3(0, 20, 0);
-//	console.log(camera);
-//	this.__scene.collisionsEnabled = true;
-	
-//	this.__scene.enablePhysics();
-//	this.__scene.setGravity(new BABYLON.Vector3(0, -10, 0));
-	
-//	console.log(this.__scene);
 	
 	// Ground
 	var ground = BABYLON.Mesh.CreateGround("ground", 40, 40, 1, this.__scene, false);
@@ -53,9 +48,6 @@ App.prototype.__init = function() {
 	ground.material = groundMaterial;
 //	ground.receiveShadows = true;
 //	ground.renderingGroupId = 1;
-//	console.log(ground);
-//	console.log(groundMaterial);
-	
 	
 	var box = BABYLON.Mesh.CreateBox("Box", 1.0, this.__scene);
 	box.position = new BABYLON.Vector3(0, 1/*0.55*/, 0);

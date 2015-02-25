@@ -18,11 +18,13 @@ var Car = function(box) {
 	this.__acceleration = 0.001;
 	this.__braking = 0.1;
 	
+	this.__impulse = 0;
+	
 	/**
 	 * Measured in radians.
 	 * @var float
 	 */
-	this.__heading = 0;
+	this.__heading = 3;
 	
 	/**
 	 * 
@@ -51,14 +53,17 @@ Car.prototype.setState = function(state) {
  */
 Car.prototype.accelerate = function() {
 	this.__speed = Math.min(this.__speed + this.__acceleration, this.__top_speed);
+	this.__impulse = 1;
 };
 
 Car.prototype.decelerate = function() {
 	this.__speed = Math.max(this.__speed - this.__acceleration, 0);
+	this.__impulse = 0;
 };
 
 Car.prototype.brake = function() {
 	this.__speed = Math.max(this.__speed - this.__braking, 0);
+	this.__impulse = -1;
 };
 
 Car.prototype.turnLeft = function() {
@@ -82,13 +87,6 @@ Car.prototype.unturn = function() {
 };
 
 Car.prototype.update = function(dt) {
-	
-//	if(this.__counter == 2) {
-//		return;
-//	}
-//	this.__box.position.x += this.__speed;
-//	this.__box.rotation.y += (this.__turning / 1000);
-//return;
 
 	if(this.__speed != 0) {
 		
@@ -148,14 +146,20 @@ Car.prototype.update = function(dt) {
 					this.__box.position
 				);
 				break;
+			
+//			default:
+//				this.__box.applyImpulse(
+//					new BABYLON.Vector3(/*this.__speed * Math.cos(this.__heading)*/0, 0, this.__speed * Math.sin(this.__heading)),
+//					this.__box.position
+//				);
+//				break;
 		}
 		
-//	console.log(this.__heading);
-//	console.log(this.__box.rotation);
-//	console.log(this.__box.position);
-//	this.__box.rotation.y = this.__heading;
 	}
-//	this.__box.rotation.y = this.__heading;
+	
+	if(this.__steer_angle !== 0) {
+		this.__box.rotate(BABYLON.Axis.Y, this.__steer_angle, BABYLON.Space.LOCAL);
+	}
 };
 
 Car.State = {

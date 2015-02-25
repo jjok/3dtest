@@ -10,11 +10,10 @@ game screen
 		scene
 			track
 				route for CPU to follow
-					points
 			player[]
 				player
-					speed
-					turning
+					car
+					score/time?
 
 http://www.gamepadjs.com/
 
