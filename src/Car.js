@@ -14,7 +14,7 @@ var Car = function(box) {
 	 * @var float
 	 */
 	this.__speed = 0;
-	this.__top_speed = 0.2;
+	this.__top_speed = 0.05;
 	this.__acceleration = 0.001;
 	this.__braking = 0.1;
 	
@@ -24,7 +24,7 @@ var Car = function(box) {
 	 * Measured in radians.
 	 * @var float
 	 */
-	this.__heading = 3;
+	this.__heading = 0;
 	
 	/**
 	 * 
@@ -38,6 +38,9 @@ var Car = function(box) {
 //	this.__half_length = this.__length / 2;
 	
 	this.__state = Car.State.REST;
+	
+	//DEBUG
+	this.__last_impulse = BABYLON.Vector3.Zero();
 };
 
 //Car.prototype.getSpeed = function() {
@@ -135,31 +138,45 @@ Car.prototype.update = function(dt) {
 		switch(this.__state) {
 			case Car.State.ACCELERATING:
 				this.__box.applyImpulse(
-					new BABYLON.Vector3(this.__speed * Math.cos(this.__heading), 0, this.__speed * Math.sin(this.__heading)),
+					new BABYLON.Vector3(this.__speed * Math.sin(this.__heading), 0, this.__speed * Math.cos(this.__heading)),
 					this.__box.position
+//					new BABYLON.Vector3(this.__box.position.x, this.__box.position.y, this.__box.position.z - this.__steer_angle)
 				);
+				//DEBUG
+				this.__last_impulse = new BABYLON.Vector3(this.__speed * Math.cos(this.__heading), 0, this.__speed * Math.sin(this.__heading));
 				break;
 			
-			case Car.State.BRAKING:
-				this.__box.applyImpulse(
-					new BABYLON.Vector3(-3 * Math.cos(this.__heading), 0, -3 * Math.sin(this.__heading)),
-					this.__box.position
-				);
-				break;
+//			case Car.State.BRAKING:
+//				this.__box.applyImpulse(
+//					new BABYLON.Vector3(-3 * Math.cos(this.__heading), 0, -3 * Math.sin(this.__heading)),
+//					this.__box.position
+//				);
+//				break;
 			
 //			default:
 //				this.__box.applyImpulse(
-//					new BABYLON.Vector3(/*this.__speed * Math.cos(this.__heading)*/0, 0, this.__speed * Math.sin(this.__heading)),
+//					new BABYLON.Vector3(Math.cos(this.__heading), 0, Math.sin(this.__heading)),
 //					this.__box.position
 //				);
 //				break;
 		}
 		
 	}
-	
-	if(this.__steer_angle !== 0) {
-		this.__box.rotate(BABYLON.Axis.Y, this.__steer_angle, BABYLON.Space.LOCAL);
-	}
+//	
+//	if(this.__steer_angle !== 0) {
+//		this.__box.rotate(BABYLON.Axis.Y, this.__steer_angle, BABYLON.Space.LOCAL);
+//		this.__box.updatePhysicsBodyPosition();
+//	}
+};
+
+Car.prototype.toString = function() {
+	return "heading: " + this.__heading.toString() +
+	     "\nspeed: " + this.__speed.toString() +
+	     "\nsteer_angle: " + this.__steer_angle.toString() +
+	     "\nstate: " + this.__state +
+	     "\nimpulse x: " + this.__last_impulse.x +
+	     "\nimpulse y: " + this.__last_impulse.y +
+	     "\nimpulse z: " + this.__last_impulse.z;
 };
 
 Car.State = {

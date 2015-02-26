@@ -17,10 +17,12 @@
 
 <style>
 	html, body, canvas { margin:0; padding:0; width:100%; height:100%; overflow:hidden; }
+	#debug { position:absolute; left:0; top:0; margin:0; padding:1em; color:white; }
 </style>
 </head>
 <body>
 <canvas id="canvas"></canvas>
+<pre id="debug"></pre>
 <script>
 $script.ready("bundle", function() {
 	var app = new App(

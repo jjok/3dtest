@@ -30,7 +30,8 @@ App.prototype.__init = function() {
 	//http://doc.babylonjs.com/page.php?p=22071
 	var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 4, 10), this.__scene);
 //	var light = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(0, -1, 0), this.__scene);
-	
+//	var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), this.__scene);
+
 	this.__scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.OimoJSPlugin());
 	
 //	var light = new BABYLON.DirectionalLight("Light", new BABYLON.Vector3(-1, -2, -1), this.__scene);
@@ -56,7 +57,7 @@ App.prototype.__init = function() {
 //	box.receiveShadows = true;
 	box.setPhysicsState({
 		impostor: BABYLON.PhysicsEngine.BoxImpostor,
-		mass: 1,
+		mass: 5,
 		friction: 0.01,
 		restitution: 0.5
 	});
@@ -124,4 +125,8 @@ App.prototype.__update = function() {
 
 App.prototype.__draw = function() {
 	this.__scene.render();
+	
+	//FIXME
+	var debug = document.getElementById("debug");
+	debug.textContent = this.__car.toString();
 };
