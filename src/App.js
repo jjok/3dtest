@@ -20,7 +20,7 @@ App.prototype.__init = function() {
 	// Move this ////////////////////////////////////////
 	// Load BABYLON 3D engine
 	this.__engine = new BABYLON.Engine(this.__canvas, true);
-	var scene = this.__scene = new BABYLON.Scene(this.__engine);
+	this.__scene = new BABYLON.Scene(this.__engine);
 	
 	//http://doc.babylonjs.com/page.php?p=22061
 	var camera = new BABYLON.ArcRotateCamera(
@@ -98,15 +98,15 @@ App.prototype.__update = function() {
 //	}
 	
 	if(this.__control_state.brake) {
-		this.__car.brake();
+//		this.__car.brake();
 		this.__car.setState(Car.State.BRAKING);
 	}
 	else if(this.__control_state.accelerate) {
-		this.__car.accelerate();
+//		this.__car.accelerate();
 		this.__car.setState(Car.State.ACCELERATING);
 	}
 	else {
-		this.__car.decelerate();
+//		this.__car.decelerate();
 		this.__car.setState(Car.State.REST);
 	}
 	

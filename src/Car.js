@@ -9,13 +9,13 @@ var Car = function(box) {
 	 */
 	this.__box = box;
 	
-	/**
-	 * The speed of the car.
-	 * @var float
-	 */
-	this.__speed = 0;
-	this.__top_speed = 0.05;
-	this.__acceleration = 0.001;
+//	/**
+//	 * The speed of the car.
+//	 * @var float
+//	 */
+//	this.__speed = 0;
+//	this.__top_speed = 0.05;
+	this.__acceleration = 0.1;
 	this.__braking = 0.1;
 	
 	this.__impulse = 0;
@@ -55,17 +55,17 @@ Car.prototype.setState = function(state) {
  * Accelerate the car.
  */
 Car.prototype.accelerate = function() {
-	this.__speed = Math.min(this.__speed + this.__acceleration, this.__top_speed);
+//	this.__speed = Math.min(this.__speed + this.__acceleration, this.__top_speed);
 	this.__impulse = 1;
 };
 
 Car.prototype.decelerate = function() {
-	this.__speed = Math.max(this.__speed - this.__acceleration, 0);
+//	this.__speed = Math.max(this.__speed - this.__acceleration, 0);
 	this.__impulse = 0;
 };
 
 Car.prototype.brake = function() {
-	this.__speed = Math.max(this.__speed - this.__braking, 0);
+//	this.__speed = Math.max(this.__speed - this.__braking, 0);
 	this.__impulse = -1;
 };
 
@@ -134,23 +134,32 @@ Car.prototype.update = function(dt) {
 //		);
 //		console.log(this.__heading);
 		this.__heading += this.__steer_angle;
+		// Not sure this is much use.
+//		if(this.__heading > 2 * Math.PI) {
+//			this.__heading -= 2 * Math.PI;
+//		}
+//		else if(this.__heading < -2 * Math.PI) {
+//			this.__heading += 2 * Math.PI;
+//		}
 		
 		switch(this.__state) {
 			case Car.State.ACCELERATING:
 				this.__box.applyImpulse(
-					new BABYLON.Vector3(this.__speed * Math.sin(this.__heading), 0, this.__speed * Math.cos(this.__heading)),
+					new BABYLON.Vector3(this.__acceleration * Math.sin(this.__heading), 0, this.__acceleration * Math.cos(this.__heading)),
 					this.__box.position
 //					new BABYLON.Vector3(this.__box.position.x, this.__box.position.y, this.__box.position.z - this.__steer_angle)
 				);
 				//DEBUG
-				this.__last_impulse = new BABYLON.Vector3(this.__speed * Math.cos(this.__heading), 0, this.__speed * Math.sin(this.__heading));
+				this.__last_impulse = new BABYLON.Vector3(this.__acceleration * Math.cos(this.__heading), 0, this.__acceleration * Math.sin(this.__heading));
 				break;
 			
 //			case Car.State.BRAKING:
 //				this.__box.applyImpulse(
-//					new BABYLON.Vector3(-3 * Math.cos(this.__heading), 0, -3 * Math.sin(this.__heading)),
+//					new BABYLON.Vector3(-this.__braking * Math.sin(this.__heading), 0, -this.__braking * Math.cos(this.__heading)),
 //					this.__box.position
 //				);
+//				//DEBUG
+//				this.__last_impulse = new BABYLON.Vector3(-this.__braking * Math.cos(this.__heading), 0, -this.__braking * Math.sin(this.__heading));
 //				break;
 			
 //			default:
@@ -171,7 +180,7 @@ Car.prototype.update = function(dt) {
 
 Car.prototype.toString = function() {
 	return "heading: " + this.__heading.toString() +
-	     "\nspeed: " + this.__speed.toString() +
+//	     "\nspeed: " + this.__speed.toString() +
 	     "\nsteer_angle: " + this.__steer_angle.toString() +
 	     "\nstate: " + this.__state +
 	     "\nimpulse x: " + this.__last_impulse.x +
